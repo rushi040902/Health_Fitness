@@ -3,4 +3,4 @@ services:
     name: health-fitness
     env: python
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn Health_Fitness.wsgi:application
+    startCommand: gunicorn calorie_tracker.wsgi:application
