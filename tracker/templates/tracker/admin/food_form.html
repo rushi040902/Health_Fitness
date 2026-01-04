@@ -1,0 +1,32 @@
+{% extends 'tracker/admin/base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>{{ action }} Food</h1>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" value="{{ food.name|default:'' }}" required>
+        </div>
+        <div class="form-group">
+            <label for="carbs">Carbs (g):</label>
+            <input type="number" step="0.1" id="carbs" name="carbs" value="{{ food.carbs|default:'' }}" required>
+        </div>
+        <div class="form-group">
+            <label for="protein">Protein (g):</label>
+            <input type="number" step="0.1" id="protein" name="protein" value="{{ food.protein|default:'' }}" required>
+        </div>
+        <div class="form-group">
+            <label for="fats">Fats (g):</label>
+            <input type="number" step="0.1" id="fats" name="fats" value="{{ food.fats|default:'' }}" required>
+        </div>
+        <div class="form-group">
+            <label for="calories">Calories:</label>
+            <input type="number" step="0.1" id="calories" name="calories" value="{{ food.calories|default:'' }}" required>
+        </div>
+        <button type="submit" class="btn btn-primary">{{ action }}</button>
+        <a href="{% url 'food_list' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

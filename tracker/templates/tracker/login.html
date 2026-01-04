@@ -1,0 +1,34 @@
+{% extends 'tracker/base.html' %}
+
+{% block title %}Login - Calorie Tracker{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-box">
+        <h2>Login</h2>
+        
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        
+        <form method="post" class="auth-form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required class="form-input" autofocus>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required class="form-input">
+            </div>
+            <button type="submit" class="btn-primary">Login</button>
+        </form>
+        <p class="auth-link">Don't have an account? <a href="{% url 'register' %}">Register here</a></p>
+    </div>
+</div>
+{% endblock %}
+

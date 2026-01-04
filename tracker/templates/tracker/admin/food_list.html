@@ -1,0 +1,35 @@
+{% extends 'tracker/admin/base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>Manage Foods</h1>
+    <a href="{% url 'food_create' %}" class="btn btn-primary">Add New Food</a>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Carbs</th>
+                <th>Protein</th>
+                <th>Fats</th>
+                <th>Calories</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for food in foods %}
+            <tr>
+                <td>{{ food.name }}</td>
+                <td>{{ food.carbs }}</td>
+                <td>{{ food.protein }}</td>
+                <td>{{ food.fats }}</td>
+                <td>{{ food.calories }}</td>
+                <td>
+                    <a href="{% url 'food_update' food.id %}" class="btn btn-sm btn-primary">Edit</a>
+                    <a href="{% url 'food_delete' food.id %}" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

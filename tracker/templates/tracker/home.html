@@ -1,0 +1,127 @@
+{% extends 'tracker/base.html' %}
+{% load static %}
+
+{% block title %}Home - Calorie Tracker{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="header-section">
+        <h1>Health & Fitness Calorie Tracker</h1>
+    </div>
+
+    <!-- Food Selection Section -->
+    <div class="food-selection-section">
+        <h2>Select Food To Add</h2>
+        <div class="food-input-group">
+            <input type="text" id="food-search" list="food-list" placeholder="Search for food..." class="food-input">
+            <datalist id="food-list">
+                {% for food in foods %}
+                <option value="{{ food.name|escape }}">
+                {% endfor %}
+            </datalist>
+            <input type="number" id="food-quantity" value="1" min="1" step="1" class="quantity-input" placeholder="Quantity">
+            <button id="add-food-btn" class="btn-add">Add</button>
+        </div>
+    </div>
+
+    <!-- Calorie Goal Section -->
+    <div class="calorie-goal-section">
+        <div class="goal-header">
+            <h2>Calorie Goal</h2>
+            <button id="edit-goal-btn" class="btn-edit-goal">Edit Goal</button>
+        </div>
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progress-bar" style="width: {{ calorie_progress }}%"></div>
+        </div>
+        <div class="calorie-info">
+            <span id="calories-consumed">{{ total_calories|floatformat:0 }}</span> / 
+            <span id="calorie-goal">{{ profile.calorie_goal }}</span> Kcal
+        </div>
+    </div>
+
+    <!-- Today's Consumption Table -->
+    <div class="consumption-section">
+        <h2>Today's Consumption</h2>
+        <table class="consumption-table">
+            <thead>
+                <tr>
+                    <th>Food item</th>
+                    <th>Carbs(g)</th>
+                    <th>Protein(g)</th>
+                    <th>Fats(g)</th>
+                    <th>Calories(Kcal)</th>
+                    <th>Remove Item</th>
+                </tr>
+            </thead>
+            <tbody id="consumption-tbody">
+                {% for consumption in today_consumption %}
+                <tr data-consumption-id="{{ consumption.id }}">
+                    <td>{{ consumption.food.name }}</td>
+                    <td>{{ consumption.total_carbs|floatformat:1 }}</td>
+                    <td>{{ consumption.total_protein|floatformat:1 }}</td>
+                    <td>{{ consumption.total_fats|floatformat:1 }}</td>
+                    <td>{{ consumption.total_calories|floatformat:0 }}</td>
+                    <td>
+                        <button class="btn-remove" onclick="removeFood({{ consumption.id }})">×</button>
+                    </td> 
+                </tr>
+                {% endfor %}
+                <tr class="total-row">
+                    <td><strong>Total</strong></td>
+                    <td><strong>{{ total_carbs|floatformat:1 }}</strong></td>
+                    <td><strong>{{ total_protein|floatformat:1 }}</strong></td>
+                    <td><strong>{{ total_fats|floatformat:1 }}</strong></td>
+                    <td><strong>{{ total_calories|floatformat:0 }}</strong></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Nutrient Breakdown Chart -->
+    <div class="chart-section">
+        <h2>Today's breakdown</h2>
+        <div class="chart-container">
+            <canvas id="nutrient-chart"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Goal Modal -->
+<div id="goal-modal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Update Calorie Goal</h2>
+        <input type="number" id="new-calorie-goal" value="{{ profile.calorie_goal }}" min="0" class="goal-input">
+        <button id="save-goal-btn" class="btn-save">Save Goal</button>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+    // Food data for JavaScript
+    const foodsData = {
+        {% for food in foods %}
+        "{{ food.name|escapejs }}": {
+            id: {{ food.id }},
+            name: "{{ food.name|escapejs }}",
+            carbs: {{ food.carbs }},
+            protein: {{ food.protein }},
+            fats: {{ food.fats }},
+            calories: {{ food.calories }}
+        }{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    };
+</script>
+<script src="{% static 'tracker/js/main.js' %}"></script>
+<script>
+    // Initialize chart with current data
+    const chartData = {
+        carbs: {{ total_carbs|default:0 }},
+        protein: {{ total_protein|default:0 }},
+        fats: {{ total_fats|default:0 }}
+    };
+    initializeChart(chartData);
+</script>
+{% endblock %}
+
